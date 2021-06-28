@@ -65,51 +65,6 @@ class Pizza
             return -2;
     }
 
-    public static function Alta($sabor, $precio, $tipo, $cantidad, $imagen)
-    {
-        $nuevo = TRUE;
-
-        if ($vector = Pizza::TraerArray())
-        {
-            $index = Pizza::VerificarExistencia($sabor, $tipo, $vector);
-
-            if ($index >= 0)
-            {
-                $vector[$index]->precio = $precio;
-                $vector[$index]->cantidad += $cantidad;
-
-                $nuevo = FALSE;
-            }
-        }
-
-        if ($nuevo)
-        {            
-            $nombreImagen = $tipo;
-            $nombreImagen .= "+". $sabor;
-            $nombreImagen .= "." . pathinfo($imagen["name"], PATHINFO_EXTENSION);
-
-            $destino = "./ImagenesDePizzas/" . $nombreImagen;
-
-            if (move_uploaded_file($imagen["tmp_name"], $destino))
-                echo "Imagen subida.";
-
-            else
-                echo "Error al intentar subir la imagen.";
-
-            $vector[] = new Pizza($sabor, $precio, $tipo, $cantidad, $nombreImagen);
-        }
-
-        if (Pizza::ActualizarJSON($vector))
-        {
-            if ($nuevo)
-                return "Ingresado";
-
-            return "Actualizado";
-        }
-
-        return "No se pudo hacer";
-    }
-
     public static function RetornarUltimoID()
     {
         $ruta = self::RUTAID;

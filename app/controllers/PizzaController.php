@@ -44,35 +44,63 @@ class PizzaController
   // {}
 
 	public function CargarUno($request, $response, $args)
-  {
-    
+  {    
     $parametros = $request->getParsedBody();
 
     $sabor = $parametros['sabor'];
     $precio = $parametros['precio'];
     $tipo = $parametros['tipo'];
     $cantidad = $parametros['cantidad'];
-
     $archivos = $request->getUploadedFiles();
 
-    // $imagen = array("name" => $archivos['imagen']->getClientFilename());
-    $imagen = array(
-      $archivos['imagen']->getClientFilename(),
-      $archivos['imagen']->getStream(),
-      $archivos['imagen']->getClientMediaType()
-      // $archivos['imagen']->,
-      // $archivos['imagen']->,
-    );
+    $nuevo = TRUE;
 
-    // $respuesta = Pizza::Alta($sabor, $precio, $tipo, $cantidad, $archivos["imagen"]);
+        if ($vector = Pizza::TraerArray())
+        {
+            $index = Pizza::VerificarExistencia($sabor, $tipo, $vector);
 
+            if ($index >= 0)
+            {
+                $vector[$index]->precio = $precio;
+                $vector[$index]->cantidad += $cantidad;
 
-    // $payload = json_encode(array("mensaje" => "$respuesta"));
-    $payload = json_encode($imagen);
+                $nuevo = FALSE;
+            }
+        }
 
-    $response->getBody()->write($payload);
+        if ($nuevo)
+        {
+            $nombreAnterior = $archivos['imagen']->getClientFilename();
+            $extension = explode(".", $nombreAnterior);
+            $extension = array_reverse($extension)[0];
 
-    return $response->withHeader('Content-Type', 'application/json');    
+            $nombreImagen = $tipo;
+            $nombreImagen .= "+". $sabor;
+            $nombreImagen .= "." . $extension;
+
+            $destino = "./ImagenesDePizzas/" . $nombreImagen;
+
+            $archivos['imagen']->moveTo($destino);
+
+            $vector[] = new Pizza($sabor, $precio, $tipo, $cantidad, $nombreImagen); // nombre y no path completo
+        }
+
+        if (Pizza::ActualizarJSON($vector))
+        {
+            if ($nuevo)
+              $payload = json_encode(array("mensaje" => "Ingresada!"));
+
+            else
+              $payload = json_encode(array("mensaje" => "Actualizada"));
+        }
+        else
+        {
+          $payload = json_encode(array("mensaje" => "No se pudo hacer"));
+        }
+
+        $response->getBody()->write($payload);
+    
+        return $response->withHeader('Content-Type', 'application/json');
   }
 
 	// public function BorrarUno($request, $response, $args)

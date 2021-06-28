@@ -32,13 +32,13 @@ class VentaController implements IApiUsable
     
         $nombreAnterior = $archivos['imagen']->getClientFilename();
         $extension = explode(".", $nombreAnterior);
-        $extension = array_reverse($extension);    
+        $extension = array_reverse($extension)[0];    
         
         $usuario = explode("@", $mail)[0];
 
         $fecha = date("Y-m-d");
 
-        $pathFoto = $destino . $tipo . "+" . $sabor . "+" . $usuario . "+" . $fecha . "." . $extension[0];
+        $pathFoto = $destino . $tipo . "+" . $sabor . "+" . $usuario . "+" . $fecha . "." . $extension;
     
         $archivos['imagen']->moveTo($pathFoto);
     
