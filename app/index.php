@@ -56,8 +56,26 @@ $mwFotos = function (Request $request, RequestHandler $handler) {
     return $response;
 };
 
+$mwFoto = function (Request $request, RequestHandler $handler) {
+
+    $handledRequest = $handler->handle($request);
+
+    $cuerpo = $handledRequest->getBody();
+
+    $objeto = json_decode($cuerpo, true);
+    
+    $texto = ListarConFoto($objeto);
+    
+    $response = new Response();
+
+    $response->getBody()->write($texto);
+
+    return $response;
+};
+
 $app->get('/ventas', \VentaController::class . ':TraerTodos')->add($mwFotos);
-$app->get('/ventas/{id}', \VentaController::class . ':TraerUno');
+$app->get('/ventas/{id}', \VentaController::class . ':TraerUno')->add($mwFoto);
+// $app->get('/ventas/{id}', \VentaController::class . ':TraerUno');
 $app->get('/ventas/sabor/{sabor}', \VentaController::class . ':TraerPorSabor');
 $app->post('/ventas', \VentaController::class . ':CargarUno');
 // $app->put('/ventas/{id}', \VentaController::class . ':ModificarUno');

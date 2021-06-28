@@ -2,17 +2,9 @@
 
 function ListarVector($array)
 {
-    $tabla = "
-        <style>
-            table, td, th{
-                font-size: 1vw;
-                border: 1px solid black;
-                border-collapse: collapse;
-                padding: 1.2vw;
-                text-align: center;
-            }
-        </style>
-
+    $tabla = Estilo();
+    
+    $tabla .= "
         <table>
             <thead>
                 <tr>";
@@ -47,33 +39,27 @@ function ListarVector($array)
 }
 
 // Funciona sólo si el array trae una clave "imagen"
-function ListarVectorConFoto($arrayVentas)
+function ListarVectorConFoto($array)
 {
-    $tabla = "
-        <style>
-            table, td, th{
-                font-size: 1vw;
-                border: 1px solid black;
-                border-collapse: collapse;
-                padding: 1.2vw;
-                text-align: center;
-            }
-
-            img{
-                width: 10vw;
-                border: none;
-            }
-        </style>
-
+    $tabla = Estilo();
+    
+    $tabla .= "
         <table>
             <thead>
                 <tr>";
 
-    $claves = array_keys($arrayVentas[0]);
+    $claves = array_keys($array[0]);
+    
+    $contador = 0;
 
     foreach ($claves as $clave)
     {
         $tabla .= "<th>$clave</th>";
+
+        if ($clave == "imagen")
+            $imageIndex = $contador;
+
+        $contador++;
     }
 
     $tabla .= "
@@ -81,25 +67,24 @@ function ListarVectorConFoto($arrayVentas)
             </thead>
             <tbody>";
 
-    foreach ($arrayVentas as $index)
+    foreach ($array as $index)
     {
-        $image = $index["imagen"];
-
         $tabla .= "<tr>";
+
+        $contador = 0;
 
         foreach ($index as $valor)
         {
-            // if ($valor == $image)
-            if ($valor == $image && $valor != NULL)
+            if ($contador == $imageIndex)
             {
-                // $tabla .= "<td style='padding:0'>$valor</td>";
                 // $tabla .= "<td style='padding:0'><img src='$valor'  alt='Sin imagen'></td>";
-                // $tabla .= "<td style='padding:0'><img src='../ImagenesDeLaVenta/molde+Anchoas+revancha+2021-06-28.jpg' alt='Sin imagen'></td>";
                 $tabla .= "<td style='padding:0'><img src='.$valor'  alt='Sin imagen'></td>";
             }
 
             else
                 $tabla .= "<td>" . $valor . "</td>";
+            
+            $contador++;
         }
 
         $tabla .= "</tr>";
@@ -110,4 +95,75 @@ function ListarVectorConFoto($arrayVentas)
         </table>";
 
     return $tabla;
+}
+
+function ListarConFoto($array)
+{
+    $tabla = Estilo();
+
+    $tabla .= "
+        <table>
+            <thead>
+                <tr>";
+
+    $claves = array_keys($array);
+    
+    $contador = 0;
+
+    foreach ($claves as $clave)
+    {
+        $tabla .= "<th>$clave</th>";
+
+        if ($clave == "imagen")
+            $imageIndex = $contador;
+
+        $contador++;
+    }
+
+    $tabla .= "
+                </tr>
+            </thead>
+            <tbody>";
+
+    $tabla .= "<tr>";
+
+    $contador = 0;
+
+    foreach ($array as $valor)
+    {
+        if ($contador == $imageIndex)
+            $tabla .= "<td style='padding:0'><img src='.$valor'  alt='Sin imagen'></td>";
+
+        else
+            $tabla .= "<td>" . $valor . "</td>";
+
+        $contador++;
+    }
+
+    $tabla .= "</tr>";
+
+    $tabla .= "
+            </tbody>
+        </table>";
+
+    return $tabla;
+}
+
+function Estilo()
+{
+    return "
+        <style>
+            table, td, th{
+                font-size: 1vw;
+                border: 1px solid black;
+                border-collapse: collapse;
+                padding: 1.2vw;
+                text-align: center;
+            }
+
+            img{
+                width: 6vw;
+                border: none;
+            }
+        </style>";
 }
