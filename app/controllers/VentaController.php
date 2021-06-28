@@ -65,14 +65,9 @@ class VentaController implements IApiUsable
 
   public function TraerUno($request, $response, $args)
   {
-    // Buscamos usuario por nombre
     $id = $args['id'];
 
-    // Buscamos por primary key
     $venta = Venta::find($id);
-
-    // Buscamos por attr usuario
-    // $usuario = Usuario::where('usuario', $usr)->first();
 
     $payload = json_encode($venta);
 
