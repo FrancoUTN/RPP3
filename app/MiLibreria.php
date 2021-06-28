@@ -47,7 +47,7 @@ function ListarVector($array)
 }
 
 // Funciona sólo si el array trae una clave "imagen"
-function ListarVectorConFoto($arrayVentas, $imageFolder)
+function ListarVectorConFoto($arrayVentas)
 {
     $tabla = "
         <style>
@@ -89,8 +89,14 @@ function ListarVectorConFoto($arrayVentas, $imageFolder)
 
         foreach ($index as $valor)
         {
-            if ($valor == $image)
-                $tabla .= "<td style='padding:0'><img src='$imageFolder/$valor' alt='Sin imagen'></td>";
+            // if ($valor == $image)
+            if ($valor == $image && $valor != NULL)
+            {
+                // $tabla .= "<td style='padding:0'>$valor</td>";
+                // $tabla .= "<td style='padding:0'><img src='$valor'  alt='Sin imagen'></td>";
+                // $tabla .= "<td style='padding:0'><img src='../ImagenesDeLaVenta/molde+Anchoas+revancha+2021-06-28.jpg' alt='Sin imagen'></td>";
+                $tabla .= "<td style='padding:0'><img src='.$valor'  alt='Sin imagen'></td>";
+            }
 
             else
                 $tabla .= "<td>" . $valor . "</td>";

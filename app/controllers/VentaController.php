@@ -37,7 +37,9 @@ class VentaController implements IApiUsable
         
         $usuario = explode("@", $mail)[0];
 
-        $pathFoto = $destino . $tipo . "+" . $sabor . "+" . $usuario . "." . $extension[0];
+        $fecha = date("Y-m-d");
+
+        $pathFoto = $destino . $tipo . "+" . $sabor . "+" . $usuario . "+" . $fecha . "." . $extension[0];
     
         $archivos['imagen']->moveTo($pathFoto);
     
@@ -53,10 +55,10 @@ class VentaController implements IApiUsable
         $venta->imagen = $pathFoto;
         $venta->save();    
     
-        $payload = json_encode(array("mensaje" => "Venta creada con exito"));
-    
-        $response->getBody()->write($payload);
+        $payload = json_encode(array("mensaje" => "Venta creada con exito"));    
     }
+
+    $response->getBody()->write($payload);
 
     return $response->withHeader('Content-Type', 'application/json');
   }
@@ -75,6 +77,20 @@ class VentaController implements IApiUsable
     $payload = json_encode($venta);
 
     $response->getBody()->write($payload);
+
+    return $response->withHeader('Content-Type', 'application/json');
+  }
+
+  public function TraerPorSabor($request, $response, $args)
+  {
+    $sabor = $args["sabor"];
+
+    $lista = Venta::where('sabor', '=', $sabor)->get();
+
+    $payload = json_encode($lista);
+
+    $response->getBody()->write($payload);
+    // $response->getBody()->write($tipo);
 
     return $response->withHeader('Content-Type', 'application/json');
   }

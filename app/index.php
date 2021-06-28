@@ -1,13 +1,16 @@
 <?php
-use Psr\Http\Message\ResponseInterface as Response;
+// use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Slim\Psr7\Response;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 require_once './controllers/VentaController.php';
+require_once './MiLibreria.php';
 
 // Load ENV
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -60,6 +63,23 @@ $capsule->addConnection([
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
+// Middlewares propios
+$mwFotos = function (Request $request, RequestHandler $handler) {
+
+    $handledRequest = $handler->handle($request);
+
+    $cuerpo = $handledRequest->getBody();
+
+    $vector = json_decode($cuerpo, true);
+    
+    $texto = ListarVectorConFoto($vector);
+    
+    $response = new Response();
+
+    $response->getBody()->write($texto);
+
+    return $response;
+};
 
 // Define app routes
 $app->get('/hello/{name}', function (Request $request, Response $response, $args) {
@@ -82,15 +102,25 @@ $app->get('/sabor/{gusto}', function (Request $request, Response $response, $arg
     return $response;
 });
 
-$app->group('/ventas', function (RouteCollectorProxy $group) {
-    $group->get('[/]', \VentaController::class . ':TraerTodos');
-    // $group->get('/{id}', \VentaController::class . ':TraerUno');
-    // $group->get('/tipo/{tipo}', \VentaController::class . ':TraerTipo');
 
-    $group->post('[/]', \VentaController::class . ':CargarUno');
-    // $group->put('/{id}', \VentaController::class . ':ModificarUno');
-    // $group->delete('/{id}', \VentaController::class . ':BorrarUno');
-});
+// $app->group('/ventas', function (RouteCollectorProxy $group) {
+//     $group->get('[/]', \VentaController::class . ':TraerTodos');
+//     // $group->get('/{id}', \VentaController::class . ':TraerUno');
+//     $group->get('/sabor/{sabor}', \VentaController::class . ':TraerPorSabor');
+
+//     $group->post('[/]', \VentaController::class . ':CargarUno');
+//     // $group->put('/{id}', \VentaController::class . ':ModificarUno');
+//     // $group->delete('/{id}', \VentaController::class . ':BorrarUno');
+// })->add($mwFotos);
+
+
+$app->get('/ventas', \VentaController::class . ':TraerTodos')->add($mwFotos);
+// $app->get('/{id}', \VentaController::class . ':TraerUno');
+$app->get('/ventas/sabor/{sabor}', \VentaController::class . ':TraerPorSabor');
+$app->post('/ventas', \VentaController::class . ':CargarUno');
+// $app->put('/{id}', \VentaController::class . ':ModificarUno');
+// $app->delete('/{id}', \VentaController::class . ':BorrarUno');
+
 
 // Run app
 $app->run();
