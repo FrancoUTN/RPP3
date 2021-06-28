@@ -83,7 +83,9 @@ $app->post('/pizzas/consultar', \PizzaController::class . ':ConsultarPizza');
 $app->get('/ventas', \VentaController::class . ':TraerTodos')->add($mwFotos);
 $app->get('/ventas/{id}', \VentaController::class . ':TraerUno')->add($mwFoto);
 // $app->get('/ventas/{id}', \VentaController::class . ':TraerUno');
-$app->get('/ventas/sabor/{sabor}', \VentaController::class . ':TraerPorSabor');
+// $app->get('/ventas/usuario/{mail}', \VentaController::class . ':TraerPorUsuario')->add($mwFotos);
+$app->get('/ventas/usuario/{usuario}', \VentaController::class . ':TraerPorUsuario');
+$app->get('/ventas/sabor/{sabor}', \VentaController::class . ':TraerPorSabor')->add($mwFotos);
 
 $app->post('/ventas', \VentaController::class . ':CargarUno');
 $app->put('/ventas/{pedido}', \VentaController::class . ':ModificarUno');

@@ -84,7 +84,33 @@ class VentaController implements IApiUsable
     $payload = json_encode($lista);
 
     $response->getBody()->write($payload);
-    // $response->getBody()->write($tipo);
+
+    return $response->withHeader('Content-Type', 'application/json');
+  }
+
+  public function TraerPorUsuario($request, $response, $args)
+  {
+    $usuario = $args["usuario"];
+
+    $lista = Venta::all();
+
+    $array = array();
+
+    foreach ($lista as $venta)
+    {
+      $mail = $venta->mail;
+
+      $mailHastaArroba = explode("@", $mail)[0];
+
+      if ($usuario == $mailHastaArroba)
+      {
+        array_push($array, $venta);
+      }
+    }
+
+    $payload = json_encode($array);
+
+    $response->getBody()->write($payload);
 
     return $response->withHeader('Content-Type', 'application/json');
   }
