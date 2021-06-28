@@ -2,8 +2,16 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
+use Slim\Routing\RouteCollectorProxy;
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 require __DIR__ . '/../vendor/autoload.php';
+
+require_once './controllers/VentaController.php';
+
+// Load ENV
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->safeLoad();
 
 /**
  * Instantiate App
@@ -33,6 +41,26 @@ $app->addRoutingMiddleware();
  */
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
+
+// Eloquent
+$container=$app->getContainer();
+
+$capsule = new Capsule;
+$capsule->addConnection([
+    'driver'    => 'mysql',
+    'host'      => $_ENV['MYSQL_HOST'],
+    'database'  => $_ENV['MYSQL_DB'],
+    'username'  => $_ENV['MYSQL_USER'],
+    'password'  => $_ENV['MYSQL_PASS'],
+    'charset'   => 'utf8',
+    'collation' => 'utf8_unicode_ci',
+    'prefix'    => '',
+]);
+
+$capsule->setAsGlobal();
+$capsule->bootEloquent();
+
+
 // Define app routes
 $app->get('/hello/{name}', function (Request $request, Response $response, $args) {
     $name = $args['name'];
@@ -44,6 +72,24 @@ $app->get('/', function (Request $request, Response $response, $args) {
 
     $response->getBody()->write("Hello mundo");
     return $response;
+});
+
+$app->get('/sabor/{gusto}', function (Request $request, Response $response, $args) {
+
+    $sabor = $args['gusto'];
+
+    $response->getBody()->write("Hello mundo, $sabor");
+    return $response;
+});
+
+$app->group('/ventas', function (RouteCollectorProxy $group) {
+    $group->get('[/]', \VentaController::class . ':TraerTodos');
+    // $group->get('/{id}', \VentaController::class . ':TraerUno');
+    // $group->get('/tipo/{tipo}', \VentaController::class . ':TraerTipo');
+
+    $group->post('[/]', \VentaController::class . ':CargarUno');
+    // $group->put('/{id}', \VentaController::class . ':ModificarUno');
+    // $group->delete('/{id}', \VentaController::class . ':BorrarUno');
 });
 
 // Run app
