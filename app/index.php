@@ -10,6 +10,7 @@ require __DIR__ . '/../vendor/autoload.php';
 require_once './controllers/VentaController.php';
 require_once './controllers/PizzaController.php';
 require_once './MiLibreria.php';
+require_once './clases/Devolucion.php';
 
 // Load ENV
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -115,8 +116,7 @@ $app->post('/pizzas/consultar', \PizzaController::class . ':ConsultarPizza');
 
 
 $app->get('/ventas', \VentaController::class . ':TraerTodos')->add($mwFotos);
-$app->get('/ventas/{id}', \VentaController::class . ':TraerUno')->add($mwFoto);
-// $app->get('/ventas/{id}', \VentaController::class . ':TraerUno');
+$app->get('/ventas/{pedido}', \VentaController::class . ':TraerUno')->add($mwFoto);
 $app->get('/ventas/fechas/{fecha1}/{fecha2}', \VentaController::class . ':TraerEntreFechas')->add($mwFotos2);
 $app->get('/ventas/usuario/{usuario}', \VentaController::class . ':TraerPorUsuario')->add($mwFotos2);
 $app->get('/ventas/sabor/{sabor}', \VentaController::class . ':TraerPorSabor')->add($mwFotos2);
@@ -124,6 +124,10 @@ $app->get('/ventas/sabor/{sabor}', \VentaController::class . ':TraerPorSabor')->
 $app->post('/ventas', \VentaController::class . ':CargarUno');
 $app->put('/ventas/{pedido}', \VentaController::class . ':ModificarUno');
 $app->delete('/ventas/{pedido}', \VentaController::class . ':BorrarUno');
+
+
+// $app->post('/devoluciones', \Devolucion::class . ':CargarUno');
+$app->post('/ventas/{pedido}', \VentaController::class . ':DevolverUno');
 
 
 // Run app

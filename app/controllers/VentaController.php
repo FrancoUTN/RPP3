@@ -2,11 +2,52 @@
 require_once './models/Venta.php';
 require_once './interfaces/IApiUsable.php';
 include_once "./clases/Pizza.php";
+include_once "./clases/Devolucion.php";
 
 use \App\Models\Venta as Venta;
 
 class VentaController implements IApiUsable
 {
+  public function DevolverUno($request, $response, $args)
+  {
+    $pedido = $args['pedido'];
+
+    $venta = Venta::where('pedido', '=', $pedido)->first();
+
+    if ($venta != NULL)
+    {
+      $archivos = $request->getUploadedFiles();
+      
+      $destino = "./ImagenesDeDevoluciones/";
+    
+      $nombreAnterior = $archivos['imagen']->getClientFilename();
+      $extension = explode(".", $nombreAnterior);
+      $extension = array_reverse($extension)[0];
+
+      $pathFoto = $destino . $pedido . "." . $extension;
+  
+      $archivos['imagen']->moveTo($pathFoto);
+
+      
+      $parametros = $request->getParsedBody();
+
+      $causa = $parametros['causa'];
+
+      $cupon = rand(0, 99999);
+
+      Devolucion::Alta($pedido, $causa, $cupon, $pathFoto);
+
+      $payload = json_encode(array("mensaje" => "Devolucion recibida"));
+    }
+    else
+    {
+      $payload = json_encode(array("mensaje" => "No existe el pedido"));
+    }
+
+    $response->getBody()->write($payload);
+
+    return $response->withHeader('Content-Type', 'application/json');
+  }
 
   public function CargarUno($request, $response, $args)
   {
@@ -62,11 +103,24 @@ class VentaController implements IApiUsable
     return $response->withHeader('Content-Type', 'application/json');
   }
 
+  // public function TraerUno($request, $response, $args)
+  // {
+  //   $id = $args['id'];
+
+  //   $venta = Venta::find($id);
+
+  //   $payload = json_encode($venta);
+
+  //   $response->getBody()->write($payload);
+
+  //   return $response->withHeader('Content-Type', 'application/json');
+  // }
+
   public function TraerUno($request, $response, $args)
   {
-    $id = $args['id'];
+    $pedido = $args['pedido'];
 
-    $venta = Venta::find($id);
+    $venta = Venta::where('pedido', '=', $pedido)->first();
 
     $payload = json_encode($venta);
 
