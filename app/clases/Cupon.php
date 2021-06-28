@@ -2,29 +2,24 @@
 
 class Cupon
 {
-    public $pedido;
-    public $causa;
-    public $cupon;
-    public $imagen;
+    public $id;
+    public $descuento;
+    public $estado;
 
-    const RUTAJSON = "./archivos/devoluciones.json";
-    // const RUTAID = "./archivos/ultimoIDDevolucion.txt";
+    const RUTAJSON = "./archivos/cupones.json";
 
-    function __construct($pedido, $causa, $cupon, $imagen)
+    function __construct($id, $descuento, $estado)
     {
-        $this->pedido = $pedido;
-        $this->causa = $causa;
-        $this->cupon = $cupon;
-        $this->imagen = $imagen;
-
-        // $this->id = Devolucion::RetornarUltimoID();
+        $this->id = $id;
+        $this->descuento = $descuento;
+        $this->estado = $estado;
     }
     
-    public static function Alta($pedido, $causa, $cupon, $nombreImagen)
+    public static function Alta($id, $descuento, $estado)
     {
         $vector = self::TraerArray();
 
-        $vector[] = new Devolucion($pedido, $causa, $cupon, $nombreImagen);
+        $vector[] = new Cupon($id, $descuento, $estado);
 
         self::ActualizarJSON($vector);
     }

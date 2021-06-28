@@ -1,4 +1,5 @@
 <?php
+include_once "./clases/Cupon.php";
 
 class Devolucion
 {
@@ -27,6 +28,9 @@ class Devolucion
         $vector[] = new Devolucion($pedido, $causa, $cupon, $nombreImagen);
 
         self::ActualizarJSON($vector);
+
+        // Cupón
+        Cupon::Alta($cupon, 10, "nuevo");
     }
 
     public static function ActualizarJSON($array)
