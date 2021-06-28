@@ -3,6 +3,7 @@ require_once './models/Venta.php';
 require_once './interfaces/IApiUsable.php';
 include_once "./clases/Pizza.php";
 include_once "./clases/Devolucion.php";
+include_once "./clases/Cupon.php";
 
 use \App\Models\Venta as Venta;
 
@@ -83,12 +84,28 @@ class VentaController implements IApiUsable
     
         $archivos['imagen']->moveTo($pathFoto);
     
+        // Cupón
+        $precio = floatval($pizza->precio);
+
+        $precioFinal = $precio;
+
+        if (isset($parametros['cupon']))
+        {
+          $cupon = $parametros['cupon'];
+
+          $descuento = Cupon::VerificarCupon($cupon);
+
+          if ($descuento != NULL)
+          {
+            $precioFinal = $precio - $precio * $descuento / 100;
+          }
+        }
     
         $venta = new Venta();
         $venta->sabor = $sabor;
         $venta->tipo = $tipo;
         $venta->cantidad = $cantidad;
-        $venta->precio = $pizza->precio;
+        $venta->precio = $precioFinal;
         $venta->mail = $parametros['mail'];
         $venta->pedido = rand(0, 999);
         $venta->fecha = date("Y-m-d");        

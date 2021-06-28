@@ -9,7 +9,6 @@ class Devolucion
     public $imagen;
 
     const RUTAJSON = "./archivos/devoluciones.json";
-    // const RUTAID = "./archivos/ultimoIDDevolucion.txt";
 
     function __construct($pedido, $causa, $cupon, $imagen)
     {
@@ -17,8 +16,6 @@ class Devolucion
         $this->causa = $causa;
         $this->cupon = $cupon;
         $this->imagen = $imagen;
-
-        // $this->id = Devolucion::RetornarUltimoID();
     }
 
     public static function Alta($pedido, $causa, $cupon, $nombreImagen)

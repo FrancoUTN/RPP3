@@ -24,6 +24,30 @@ class Cupon
         self::ActualizarJSON($vector);
     }
 
+    public static function VerificarCupon($idCupon)
+    {
+        $vector = self::TraerArray();
+
+        foreach ($vector as $cupon)
+        {
+            if ($cupon->id == $idCupon)
+            {
+                if ($cupon->estado == "usado")
+                {
+                    return NULL;
+                }
+
+                $cupon->estado = "usado";
+
+                self::ActualizarJSON($vector);
+
+                return $cupon->descuento;
+            }
+        }
+
+        return NULL;
+    }
+
     public static function ActualizarJSON($array)
     {
         $vectorJSONeado = json_encode($array);
