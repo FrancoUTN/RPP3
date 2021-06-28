@@ -149,13 +149,26 @@ class VentaController implements IApiUsable
 
   public function BorrarUno($request, $response, $args)
   {
-    $id = $args['id'];
+    $pedido = $args['pedido'];
 
-    // Buscamos
-    $venta = Venta::find($id);
+    $venta = Venta::where('pedido', '=', $pedido)->first();
 
-    // Borramos
     $venta->delete();
+
+    $foto = $venta->imagen;
+
+    if ($foto != NULL)
+    {
+      $oldname = $foto;
+
+      $explotado = explode("/", $oldname);
+
+      $revertido = array_reverse($explotado);
+
+      $newname = "./BACKUPVENTAS/" . $revertido[0];
+
+      rename($oldname, $newname);
+    }
 
     $payload = json_encode(array("mensaje" => "Venta borrada con exito"));
 

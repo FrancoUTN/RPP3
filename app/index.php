@@ -87,7 +87,7 @@ $app->get('/ventas/sabor/{sabor}', \VentaController::class . ':TraerPorSabor');
 
 $app->post('/ventas', \VentaController::class . ':CargarUno');
 $app->put('/ventas/{pedido}', \VentaController::class . ':ModificarUno');
-// $app->delete('/ventas/{id}', \VentaController::class . ':BorrarUno');
+$app->delete('/ventas/{pedido}', \VentaController::class . ':BorrarUno');
 
 
 // Run app
