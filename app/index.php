@@ -8,6 +8,7 @@ use Slim\Psr7\Response;
 require __DIR__ . '/../vendor/autoload.php';
 
 require_once './controllers/VentaController.php';
+require_once './controllers/PizzaController.php';
 require_once './MiLibreria.php';
 
 // Load ENV
@@ -72,6 +73,10 @@ $mwFoto = function (Request $request, RequestHandler $handler) {
 
     return $response;
 };
+
+$app->post('/pizzas', \PizzaController::class . ':CargarUno');
+$app->post('/pizzas/consultar', \PizzaController::class . ':ConsultarPizza');
+
 
 $app->get('/ventas', \VentaController::class . ':TraerTodos')->add($mwFotos);
 $app->get('/ventas/{id}', \VentaController::class . ':TraerUno')->add($mwFoto);

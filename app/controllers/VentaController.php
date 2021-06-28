@@ -1,7 +1,6 @@
 <?php
 require_once './models/Venta.php';
 require_once './interfaces/IApiUsable.php';
-
 include_once "./clases/Pizza.php";
 
 use \App\Models\Venta as Venta;
@@ -117,28 +116,28 @@ class VentaController implements IApiUsable
 
   public function ModificarUno($request, $response, $args)
   {
-    $parametros = $request->getParsedBody();
+    // $parametros = $request->getParsedBody();
 
-    $usrModificado = $parametros['usuario'];
-    $usuarioId = $args['id'];
+    // $usrModificado = $parametros['usuario'];
+    // $usuarioId = $args['id'];
 
-    // Conseguimos el objeto
-    $usr = Usuario::where('id', '=', $usuarioId)->first();
+    // // Conseguimos el objeto
+    // $usr = Usuario::where('id', '=', $usuarioId)->first();
 
-    // Si existe
-    if ($usr !== null) {
-      // Seteamos un nuevo usuario
-      $usr->usuario = $usrModificado;
-      // Guardamos en base de datos
-      $usr->save();
-      $payload = json_encode(array("mensaje" => "Usuario modificado con exito"));
-    } else {
-      $payload = json_encode(array("mensaje" => "Usuario no encontrado"));
-    }
+    // // Si existe
+    // if ($usr !== null) {
+    //   // Seteamos un nuevo usuario
+    //   $usr->usuario = $usrModificado;
+    //   // Guardamos en base de datos
+    //   $usr->save();
+    //   $payload = json_encode(array("mensaje" => "Usuario modificado con exito"));
+    // } else {
+    //   $payload = json_encode(array("mensaje" => "Usuario no encontrado"));
+    // }
 
-    $response->getBody()->write($payload);
-    return $response
-      ->withHeader('Content-Type', 'application/json');
+    // $response->getBody()->write($payload);
+    // return $response
+    //   ->withHeader('Content-Type', 'application/json');
   }
 
   public function BorrarUno($request, $response, $args)
