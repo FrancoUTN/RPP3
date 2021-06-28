@@ -109,35 +109,42 @@ class VentaController implements IApiUsable
     $payload = json_encode($lista);
 
     $response->getBody()->write($payload);
-    // $response->getBody()->write($tipo);
 
     return $response->withHeader('Content-Type', 'application/json');
   }
 
   public function ModificarUno($request, $response, $args)
   {
-    // $parametros = $request->getParsedBody();
+    $parametros = $request->getParsedBody();
 
-    // $usrModificado = $parametros['usuario'];
-    // $usuarioId = $args['id'];
+    $pedido = $args['pedido'];
 
-    // // Conseguimos el objeto
-    // $usr = Usuario::where('id', '=', $usuarioId)->first();
+    $venta = Venta::where('pedido', '=', $pedido)->first();
 
-    // // Si existe
-    // if ($usr !== null) {
-    //   // Seteamos un nuevo usuario
-    //   $usr->usuario = $usrModificado;
-    //   // Guardamos en base de datos
-    //   $usr->save();
-    //   $payload = json_encode(array("mensaje" => "Usuario modificado con exito"));
-    // } else {
-    //   $payload = json_encode(array("mensaje" => "Usuario no encontrado"));
-    // }
+    if ($venta !== null)
+    {
+      $mail = $parametros['mail'];
+      $sabor = $parametros['sabor'];
+      $tipo = $parametros['tipo'];
+      $cantidad = $parametros['cantidad'];
 
-    // $response->getBody()->write($payload);
-    // return $response
-    //   ->withHeader('Content-Type', 'application/json');
+      $venta->mail = $mail;
+      $venta->sabor = $sabor;
+      $venta->tipo = $tipo;
+      $venta->cantidad = $cantidad;
+
+      $venta->save();
+
+      $payload = json_encode(array("mensaje" => "Venta modificada con exito!"));
+    }
+    else
+    {
+      $payload = json_encode(array("mensaje" => "Venta no encontrada."));
+    }
+
+    $response->getBody()->write($payload);
+
+    return $response->withHeader('Content-Type', 'application/json');
   }
 
   public function BorrarUno($request, $response, $args)

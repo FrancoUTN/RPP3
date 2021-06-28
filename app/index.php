@@ -20,6 +20,7 @@ $app = AppFactory::create();
 
 // Add error middleware
 $app->addErrorMiddleware(true, true, true);
+$app->addBodyParsingMiddleware(); // Clave.
 
 // Eloquent
 $container=$app->getContainer(); // ?
@@ -74,6 +75,7 @@ $mwFoto = function (Request $request, RequestHandler $handler) {
     return $response;
 };
 
+// Rutas
 $app->post('/pizzas', \PizzaController::class . ':CargarUno');
 $app->post('/pizzas/consultar', \PizzaController::class . ':ConsultarPizza');
 
@@ -82,11 +84,11 @@ $app->get('/ventas', \VentaController::class . ':TraerTodos')->add($mwFotos);
 $app->get('/ventas/{id}', \VentaController::class . ':TraerUno')->add($mwFoto);
 // $app->get('/ventas/{id}', \VentaController::class . ':TraerUno');
 $app->get('/ventas/sabor/{sabor}', \VentaController::class . ':TraerPorSabor');
+
 $app->post('/ventas', \VentaController::class . ':CargarUno');
-// $app->put('/ventas/{id}', \VentaController::class . ':ModificarUno');
+$app->put('/ventas/{pedido}', \VentaController::class . ':ModificarUno');
 // $app->delete('/ventas/{id}', \VentaController::class . ':BorrarUno');
 
 
 // Run app
 $app->run();
-
