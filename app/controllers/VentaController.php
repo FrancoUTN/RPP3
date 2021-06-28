@@ -75,11 +75,12 @@ class VentaController implements IApiUsable
     return $response->withHeader('Content-Type', 'application/json');
   }
 
-  public function TraerPorSabor($request, $response, $args)
+  public function TraerEntreFechas($request, $response, $args)
   {
-    $sabor = $args["sabor"];
+    $fecha1 = $args["fecha1"];
+    $fecha2 = $args["fecha2"];
 
-    $lista = Venta::where('sabor', '=', $sabor)->get();
+    $lista = Venta::where('fecha', '>', $fecha1)->where('fecha', '<', $fecha2)->orderBy("sabor")->get();
 
     $payload = json_encode($lista);
 
@@ -115,9 +116,11 @@ class VentaController implements IApiUsable
     return $response->withHeader('Content-Type', 'application/json');
   }
 
-  public function TraerTodos($request, $response, $args)
+  public function TraerPorSabor($request, $response, $args)
   {
-    $lista = Venta::all();
+    $sabor = $args["sabor"];
+
+    $lista = Venta::where('sabor', '=', $sabor)->get();
 
     $payload = json_encode($lista);
 
@@ -126,11 +129,9 @@ class VentaController implements IApiUsable
     return $response->withHeader('Content-Type', 'application/json');
   }
 
-  public function TraerTipo($request, $response, $args)
+  public function TraerTodos($request, $response, $args)
   {
-    $tipo = $args["tipo"];
-
-    $lista = Venta::where('tipo', '=', $tipo)->get();
+    $lista = Venta::all();
 
     $payload = json_encode($lista);
 

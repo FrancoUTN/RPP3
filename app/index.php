@@ -58,6 +58,23 @@ $mwFotos = function (Request $request, RequestHandler $handler) {
     return $response;
 };
 
+$mwFotos2 = function (Request $request, RequestHandler $handler) {
+
+    $handledRequest = $handler->handle($request);
+
+    $cuerpo = $handledRequest->getBody();
+
+    $vector = json_decode($cuerpo, true);
+    
+    $texto = ListarVectorConFoto2($vector);
+    
+    $response = new Response();
+
+    $response->getBody()->write($texto);
+
+    return $response;
+};
+
 $mwFoto = function (Request $request, RequestHandler $handler) {
 
     $handledRequest = $handler->handle($request);
@@ -75,6 +92,23 @@ $mwFoto = function (Request $request, RequestHandler $handler) {
     return $response;
 };
 
+$mwFoto2 = function (Request $request, RequestHandler $handler) {
+
+    $handledRequest = $handler->handle($request);
+
+    $cuerpo = $handledRequest->getBody();
+
+    $objeto = json_decode($cuerpo, true);
+    
+    $texto = ListarConFoto2($objeto);
+    
+    $response = new Response();
+
+    $response->getBody()->write($texto);
+
+    return $response;
+};
+
 // Rutas
 $app->post('/pizzas', \PizzaController::class . ':CargarUno');
 $app->post('/pizzas/consultar', \PizzaController::class . ':ConsultarPizza');
@@ -83,9 +117,9 @@ $app->post('/pizzas/consultar', \PizzaController::class . ':ConsultarPizza');
 $app->get('/ventas', \VentaController::class . ':TraerTodos')->add($mwFotos);
 $app->get('/ventas/{id}', \VentaController::class . ':TraerUno')->add($mwFoto);
 // $app->get('/ventas/{id}', \VentaController::class . ':TraerUno');
-// $app->get('/ventas/usuario/{mail}', \VentaController::class . ':TraerPorUsuario')->add($mwFotos);
-$app->get('/ventas/usuario/{usuario}', \VentaController::class . ':TraerPorUsuario');
-$app->get('/ventas/sabor/{sabor}', \VentaController::class . ':TraerPorSabor')->add($mwFotos);
+$app->get('/ventas/fechas/{fecha1}/{fecha2}', \VentaController::class . ':TraerEntreFechas')->add($mwFotos2);
+$app->get('/ventas/usuario/{usuario}', \VentaController::class . ':TraerPorUsuario')->add($mwFotos2);
+$app->get('/ventas/sabor/{sabor}', \VentaController::class . ':TraerPorSabor')->add($mwFotos2);
 
 $app->post('/ventas', \VentaController::class . ':CargarUno');
 $app->put('/ventas/{pedido}', \VentaController::class . ':ModificarUno');
