@@ -38,7 +38,7 @@ class VentaController implements IApiUsable
 
       Devolucion::Alta($pedido, $causa, $cupon, $pathFoto);
 
-      $payload = json_encode(array("mensaje" => "Devolucion recibida"));
+      $payload = json_encode(array("mensaje" => "Devolucion recibida. Cupón: $cupon"));
     }
     else
     {
@@ -87,7 +87,9 @@ class VentaController implements IApiUsable
         // Cupón
         $precio = floatval($pizza->precio);
 
-        $precioFinal = $precio;
+        $precioTotal = $precio * $cantidad;
+
+        $precioFinal = $precioTotal;
 
         if (isset($parametros['cupon']))
         {
@@ -97,7 +99,7 @@ class VentaController implements IApiUsable
 
           if ($descuento != NULL)
           {
-            $precioFinal = $precio - $precio * $descuento / 100;
+            $precioFinal = $precioTotal - $precioTotal * $descuento / 100;
           }
         }
     
@@ -119,19 +121,6 @@ class VentaController implements IApiUsable
 
     return $response->withHeader('Content-Type', 'application/json');
   }
-
-  // public function TraerUno($request, $response, $args)
-  // {
-  //   $id = $args['id'];
-
-  //   $venta = Venta::find($id);
-
-  //   $payload = json_encode($venta);
-
-  //   $response->getBody()->write($payload);
-
-  //   return $response->withHeader('Content-Type', 'application/json');
-  // }
 
   public function TraerUno($request, $response, $args)
   {

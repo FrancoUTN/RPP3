@@ -125,8 +125,6 @@ $app->post('/ventas', \VentaController::class . ':CargarUno');
 $app->put('/ventas/{pedido}', \VentaController::class . ':ModificarUno');
 $app->delete('/ventas/{pedido}', \VentaController::class . ':BorrarUno');
 
-
-// $app->post('/devoluciones', \Devolucion::class . ':CargarUno');
 $app->post('/ventas/{pedido}', \VentaController::class . ':DevolverUno');
 
 
